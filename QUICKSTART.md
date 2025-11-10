@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-This guide will help you get started with the Humana Red Teaming Agent in under 10 minutes.
+This guide will help you get started with the AI Red Teaming Agent in under 10 minutes.
 
 ## Step 1: Verify Prerequisites (2 minutes)
 
@@ -28,7 +28,7 @@ az login
 
 ```powershell
 # Navigate to project
-cd c:\Users\christava\Documents\src\github.com\ctava-msft\customers-top\humana-top\humana-red-teaming-agent
+cd red-teaming-agent
 
 # Create virtual environment
 python -m venv venv
@@ -154,7 +154,7 @@ az account set --subscription <your-subscription-id>
 
 - Review the full [README.md](README.md)
 - Check [Microsoft Documentation](https://learn.microsoft.com/en-us/azure/ai-foundry/concepts/ai-red-teaming-agent)
-- Contact the Humana AI Security team
+- Contact your AI Security team
 
 ## Security Reminder
 

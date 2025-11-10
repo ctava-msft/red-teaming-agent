@@ -1,4 +1,4 @@
-# Humana Red Teaming Agent
+# AI Red Teaming Agent
 
 A Python-based project for automated AI red teaming using **PyRIT** (Python Risk Identification Tool) and **Azure AI Foundry**. This tool helps identify safety and security risks in AI systems through automated adversarial testing.
 
@@ -59,7 +59,7 @@ The agent supports 20+ attack strategies including:
 ### 1. Clone or Navigate to the Project
 
 ```powershell
-cd c:\Users\christava\Documents\src\github.com\ctava-msft\customers-top\humana-top\humana-red-teaming-agent
+cd red-teaming-agent
 ```
 
 ### 2. Create Virtual Environment
@@ -317,7 +317,7 @@ VIOLENCE:
 ## 🏗️ Project Structure
 
 ```
-humana-red-teaming-agent/
+red-teaming-agent/
 ├── src/
 │   ├── __init__.py                 # Package initialization
 │   ├── red_team_agent.py           # Main Red Teaming Agent
@@ -440,11 +440,11 @@ python --version
 
 ## 📝 License
 
-This project is for internal use at Humana. Ensure compliance with your organization's policies.
+This project is for internal use. Ensure compliance with your organization's policies.
 
 ## 🤝 Contributing
 
-For questions or contributions, please contact the AI Security team.
+For questions or contributions, please contact your AI Security team.
 
 ## ⚠️ Important Notes
 
@@ -461,4 +461,4 @@ For questions or contributions, please contact the AI Security team.
 For issues or questions:
 1. Check the troubleshooting section
 2. Review official Microsoft documentation
-3. Contact the AI Security team at Humana
+3. Contact your AI Security team
