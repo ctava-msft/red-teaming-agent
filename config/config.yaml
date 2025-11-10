@@ -1,0 +1,52 @@
+# Red Teaming Agent Configuration
+
+# Azure AI Foundry Project Settings
+azure:
+  subscription_id: "${AZURE_SUBSCRIPTION_ID}"
+  resource_group: "${AZURE_RESOURCE_GROUP}"
+  project_name: "${AZURE_PROJECT_NAME}"
+  tenant_id: "${AZURE_TENANT_ID}"
+  storage_account_name: "${AZURE_STORAGE_ACCOUNT_NAME}"
+
+# Red Teaming Scan Settings
+red_teaming:
+  # Number of attack objectives per risk category (1-100)
+  num_objectives: 10
+  
+  # Risk categories to test (options: violence, sexual, hate_unfairness, self_harm)
+  risk_categories:
+    - violence
+    - sexual
+    - hate_unfairness
+    - self_harm
+  
+  # Attack strategies to use (see Azure docs for full list)
+  # Leave empty to use all available strategies
+  attack_strategies: []
+  
+  # Output settings
+  output_dir: "outputs"
+  save_results: true
+  
+  # Logging settings
+  log_level: "INFO"
+  log_to_azure: true
+
+# Target Application Settings (for scanning your application)
+target:
+  type: "callback"  # Options: callback, model_config, pyrit_target
+  endpoint: "${TARGET_ENDPOINT}"
+  
+# Model Configuration (for scanning base models)
+model:
+  deployment_name: "${MODEL_DEPLOYMENT_NAME}"
+  endpoint: "${MODEL_ENDPOINT}"
+  api_version: "2024-08-01-preview"
+  
+# Evaluation Settings
+evaluation:
+  # Enable detailed evaluation metrics
+  enable_detailed_metrics: true
+  
+  # ASR (Attack Success Rate) threshold for reporting
+  asr_threshold: 0.1  # Report if ASR > 10%
