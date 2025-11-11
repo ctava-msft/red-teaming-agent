@@ -4,7 +4,13 @@
 
 A comprehensive Python-based solution for automated AI red teaming using **PyRIT** (Python Risk Identification Tool) and **Azure AI Foundry**. This project enables security teams to proactively identify safety and security risks in generative AI systems.
 
+**Project Components:**
+1. **Red Teaming Agent** - Automated adversarial testing framework with PyRIT
+2. **APIM-based MCP Agent** - Azure API Management gateway for Model Context Protocol (MCP) servers
+
 ## Key Features
+
+### Red Teaming Agent
 
 ✅ **Automated Red Teaming Scans**
 - Test AI systems against 100+ attack objectives per risk category
@@ -34,16 +40,57 @@ A comprehensive Python-based solution for automated AI red teaming using **PyRIT
 - Unit tests included
 - Security best practices
 
+### APIM-based MCP Agent
+
+✅ **AI Gateway Architecture**
+- Azure API Management as intelligent MCP server gateway
+- OAuth 2.0 authentication following MCP Authorization specification
+- Scalable infrastructure for multiple concurrent agent sessions
+
+✅ **Custom Agent Tools**
+- Extensible framework for building AI agent tools
+- Pre-built tools: `hello_mcp`, `save_snippet`, `get_snippet`
+- Azure Functions runtime for serverless execution
+
+✅ **Enterprise Integration**
+- Access to enterprise systems, databases, and APIs through MCP
+- Secure agent interactions with proper authentication/authorization
+- Azure Storage for agent data persistence
+
 ## Project Structure
 
 ```
 humana-red-teaming-agent/
 ├── 📂 src/                          # Core application code
 │   ├── red_team_agent.py            # Main Red Teaming Agent
+│   ├── function_app.py              # ⭐ Integrated Azure Functions MCP tools
 │   ├── config_manager.py            # Configuration management
 │   ├── auth.py                      # Azure authentication
 │   ├── logger.py                    # Logging utilities
-│   └── results_processor.py         # Results analysis
+│   ├── results_processor.py         # Results analysis
+│   ├── datasets.py                  # Risk categories & attack strategies
+│   ├── host.json                    # Azure Functions host configuration
+│   ├── local.settings.json          # Local development settings
+│   ├── .funcignore                  # Function deployment ignore rules
+│   └── 📂 .vscode/                  # VS Code Azure Functions configuration
+│       ├── extensions.json
+│       ├── launch.json
+│       ├── settings.json
+│       └── tasks.json
+│
+├── 📂 infra/                        # Azure infrastructure (Bicep)
+│   ├── main.bicep                   # Main infrastructure template
+│   ├── 📂 app/                      # Application components
+│   │   ├── 📂 apim-mcp/             # APIM MCP server configuration
+│   │   │   ├── mcp-api.bicep        # MCP API definition
+│   │   │   └── mcp-api.policy.xml   # APIM policies
+│   │   └── 📂 apim-oauth/           # OAuth authentication
+│   │       ├── oauth.bicep          # OAuth infrastructure
+│   │       └── *.policy.xml         # OAuth policies
+│   └── 📂 core/                     # Core Azure resources
+│       ├── apim/                    # API Management
+│       ├── storage/                 # Storage accounts
+│       └── monitor/                 # Application Insights
 │
 ├── 📂 examples/                     # Usage examples
 │   ├── simple_callback_example.py   # Basic callback example
@@ -59,19 +106,28 @@ humana-red-teaming-agent/
 │   └── test_results_processor.py
 │
 ├── 📂 docs/                         # Documentation
-│   └── AZURE_SETUP.md               # Azure setup guide
+│   ├── AZURE_SETUP.md               # Azure setup guide
+│   └── DATASETS_REFERENCE.md        # Datasets reference
 │
 ├── 📂 outputs/                      # Scan results (gitignored)
 ├── 📂 logs/                         # Log files (gitignored)
 │
 ├── 📄 README.md                     # Main documentation
 ├── 📄 QUICKSTART.md                 # Quick start guide
+├── 📄 PROJECT_OVERVIEW.md           # This file
+├── 📄 INTEGRATION_SUMMARY.md        # Integration details
 ├── 📄 requirements.txt              # Python dependencies
 ├── 📄 requirements-dev.txt          # Development dependencies
 ├── 📄 pyproject.toml                # Project metadata
+├── 📄 azure.yaml                    # Azure Developer CLI config
 ├── 📄 .env.example                  # Environment template
 └── 📄 .gitignore                    # Git ignore rules
 ```
+
+**Key Integration Points:**
+- `src/function_app.py` - Integrated MCP tools that leverage `RedTeamingAgent` class
+- All Azure Functions configuration files now in `src/` directory
+- Deploy with `azd up` to provision APIM, Functions, and storage infrastructure
 
 ## Technology Stack
 
@@ -165,13 +221,13 @@ Analyze specific scenarios or prompts that may have caused issues.
 # Setup
 python -m venv venv
 .\venv\Scripts\Activate.ps1
-pip install "azure-ai-evaluation[redteam]" --pre
+pip install -r requirements.txt
 
 # Configure
 cp .env.example .env
 # Edit .env with your Azure credentials
 
-# Run first scan
+# Run first scan (Python API)
 python examples\simple_callback_example.py
 
 # Run all examples
@@ -179,8 +235,45 @@ python examples\simple_callback_example.py
 python examples\advanced_callback_example.py
 python examples\model_config_example.py
 
+# Deploy integrated MCP tools (Azure Functions)
+azd up
+
+# Test MCP tools
+npx @modelcontextprotocol/inspector
+# Connect to: https://<your-apim>.azure-api.net/mcp/sse
+
 # Run tests
 pytest tests/
+```
+
+## Integration Architecture
+
+### Dual Interface Design
+
+This project provides two ways to use red teaming capabilities:
+
+**1. Python API (Direct)**
+- Import and use `RedTeamingAgent` class directly
+- Run scans programmatically in Python scripts
+- Full control over configuration and callbacks
+- Best for: Development, testing, custom integrations
+
+**2. MCP Tools (Agent-Based)**
+- Expose red teaming as tools via Azure Functions
+- AI agents call tools through Azure APIM gateway
+- Tools: `run_red_team_scan`, `get_scan_results`, etc.
+- Best for: Agent workflows, automated testing, enterprise deployments
+
+### Integration Flow
+
+```
+AI Agent → APIM Gateway → Azure Functions (src/function_app.py) 
+                              ↓
+                         RedTeamingAgent class
+                              ↓
+                         PyRIT + Azure AI Foundry
+                              ↓
+                         Azure Storage (results)
 ```
 
 ## Support & Resources

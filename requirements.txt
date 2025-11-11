@@ -5,6 +5,9 @@ azure-identity>=1.15.0
 azure-ai-projects>=1.0.0b1
 python-dotenv>=1.0.0
 
+# Azure Functions for MCP Tools
+azure-functions>=1.18.0
+
 # Additional dependencies for enhanced functionality
 pyyaml>=6.0.1
 requests>=2.31.0

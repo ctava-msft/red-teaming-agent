@@ -1,6 +1,11 @@
 # AI Red Teaming Agent
 
-A Python-based project for automated AI red teaming using **PyRIT** (Python Risk Identification Tool) and **Azure AI Foundry**. This tool helps identify safety and security risks in AI systems through automated adversarial testing.
+A comprehensive Python-based project for automated AI red teaming using **PyRIT** (Python Risk Identification Tool) and **Azure AI Foundry**. This tool helps identify safety and security risks in AI systems through automated adversarial testing.
+
+**Integrated Components:**
+1. **Red Teaming Agent** - Automated adversarial testing framework with PyRIT
+2. **MCP Tools** - Model Context Protocol tools that expose red teaming capabilities to AI agents via Azure Functions
+3. **APIM Gateway** - Azure API Management for secure, scalable MCP server deployment
 
 ## 🎯 Overview
 
@@ -9,6 +14,21 @@ The Red Teaming Agent automates the process of:
 1. **Automated scans for content risks** - Scan AI models and applications for safety risks
 2. **Evaluate probing success** - Measure Attack Success Rate (ASR) for different risk categories
 3. **Reporting and logging** - Generate detailed reports and track findings over time
+4. **MCP Tool Integration** - Expose red teaming capabilities as tools that AI agents can discover and use
+
+### Available MCP Tools
+
+The integrated solution provides these tools for AI agents:
+
+| Tool                      | Purpose                                        | Use Case                                     |
+|---------------------------|------------------------------------------------|----------------------------------------------|
+| `hello_mcp`               | Test MCP connectivity                          | Verify agent can call MCP tools              |
+| `save_snippet`            | Store code/text snippets                       | Save information for later retrieval         |
+| `get_snippet`             | Retrieve stored snippets                       | Access previously saved data                 |
+| `run_red_team_scan`       | Execute red teaming security scan              | Test AI systems for safety vulnerabilities   |
+| `get_scan_results`        | Retrieve detailed scan results                 | Analyze red teaming findings                 |
+| `list_attack_strategies`  | List available attack strategies               | Discover testing capabilities                |
+| `get_risk_categories`     | Get supported risk categories                  | Understand what risks can be tested          |
 
 ### Supported Risk Categories
 
@@ -45,9 +65,6 @@ The agent supports 20+ attack strategies including:
 
 3. **Supported Regions**
    - East US 2
-   - Sweden Central
-   - France Central
-   - Switzerland West
 
 4. **Azure Authentication**
    - Azure CLI installed and logged in (`az login`)
@@ -320,17 +337,32 @@ VIOLENCE:
 red-teaming-agent/
 ├── src/
 │   ├── __init__.py                 # Package initialization
-│   ├── red_team_agent.py           # Main Red Teaming Agent
+```
+red-teaming-agent/
+├── src/
+│   ├── __init__.py                 # Package initialization
+│   ├── red_team_agent.py           # Main Red Teaming Agent class
+│   ├── function_app.py             # ⭐ Integrated Azure Functions MCP tools
 │   ├── config_manager.py           # Configuration management
 │   ├── auth.py                     # Azure authentication
 │   ├── logger.py                   # Logging utilities
 │   ├── results_processor.py        # Results analysis
-│   └── datasets.py                 # Risk categories & attack strategies
+│   ├── datasets.py                 # Risk categories & attack strategies
+│   ├── host.json                   # Azure Functions host configuration
+│   ├── local.settings.json         # Local development settings
+│   ├── .funcignore                 # Function deployment ignore rules
+│   └── .vscode/                    # VS Code Azure Functions configuration
 ├── examples/
 │   ├── simple_callback_example.py  # Simple callback example
 │   ├── advanced_callback_example.py # OpenAI protocol example
 │   ├── model_config_example.py     # Model configuration example
 │   └── dataset_examples.py         # Pre-configured dataset examples
+├── infra/                          # Azure infrastructure (Bicep)
+│   ├── main.bicep                  # Main infrastructure template
+│   ├── app/                        # Application components
+│   │   ├── apim-mcp/               # APIM MCP server configuration
+│   │   └── apim-oauth/             # OAuth authentication
+│   └── core/                       # Core Azure resources
 ├── config/
 │   └── config.yaml                 # Configuration settings
 ├── docs/
@@ -339,12 +371,18 @@ red-teaming-agent/
 ├── tests/                          # Unit tests
 ├── outputs/                        # Scan results (gitignored)
 ├── logs/                           # Log files (gitignored)
-├── requirements.txt                # Python dependencies
+├── requirements.txt                # Python dependencies (includes azure-functions)
 ├── pyproject.toml                  # Project metadata
 ├── .env.example                    # Environment template
 ├── .gitignore                      # Git ignore rules
 └── README.md                       # This file
 ```
+
+**Key Integration Points:**
+- `src/function_app.py` - Integrated MCP tools that leverage `RedTeamingAgent` class
+- All Azure Functions configuration files now in `src/` directory
+- MCP tools can run red team scans and retrieve results via Azure Functions
+- Deploy with `azd up` to provision APIM, Functions, and storage infrastructure
 
 ## 🔐 Security Best Practices
 
@@ -398,7 +436,55 @@ pytest --cov=src tests/
 - [Three Takeaways from Red Teaming 100 Generative AI Products](https://www.microsoft.com/security/blog/2025/01/13/3-takeaways-from-red-teaming-100-generative-ai-products/)
 - [Microsoft AI Red Team](https://www.microsoft.com/security/blog/2023/08/07/microsoft-ai-red-team-building-future-of-safer-ai/)
 
-## 🐛 Troubleshooting
+## 🤖 APIM-Based MCP Agent
+
+This project includes an **Azure API Management (APIM)** based agent that implements the **Model Context Protocol (MCP)** specification. This component enables you to build scalable AI agents with custom tools backed by Azure Functions.
+
+### What is the APIM-MCP Agent?
+
+The APIM-based MCP agent provides:
+
+🌐 **AI Gateway**: Azure API Management acts as an intelligent gateway for MCP servers  
+� **Custom Agent Tools**: Build tools that AI agents can discover and use through MCP  
+⚡ **Serverless Runtime**: Azure Functions host the MCP tool implementations  
+🛡️ **Enterprise Security**: OAuth 2.0 authentication following MCP Authorization spec  
+📊 **Scalability**: Handle multiple concurrent agent sessions with Azure's infrastructure
+
+### Quick Start with APIM-MCP Agent
+
+The APIM agent is located in the `apim-agent/` directory. See [apim-agent/README.md](apim-agent/README.md) for complete documentation.
+
+**Deploy the MCP Agent Infrastructure:**
+
+```powershell
+azd up
+```
+
+This provisions:
+- Azure API Management (AI Gateway)
+- Azure Functions (MCP tool runtime)
+- Storage Account (agent data persistence)
+- Authentication & monitoring
+
+**Available MCP Tools:**
+
+| Tool             | Purpose                  | Use Case                                       |
+|------------------|--------------------------|------------------------------------------------|
+| `hello_mcp`      | Simple greeting tool     | Test agent connectivity and basic tool calling |
+| `save_snippet`   | Store code/text snippets | Let agents save information for later          |
+| `get_snippet`    | Retrieve stored snippets | Enable agents to access previously saved data  |
+
+**Test with MCP Inspector:**
+
+```powershell
+npx @modelcontextprotocol/inspector
+```
+
+Connect to: `https://<your-apim-service>.azure-api.net/mcp/sse`
+
+For detailed setup, testing, and customization instructions, see the [APIM Agent README](apim-agent/README.md).
+
+## 📚 Additional Resources
 
 ### Python Version Issues
 
